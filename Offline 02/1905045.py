@@ -7,16 +7,28 @@ Created on Sat Jan  1 22:02:22 2022
 
 import numpy as np
 
+def partial_pivot(A, B, col, row):
+    # find index of the max element staring from row in col
+    idx = row
+    for i in range(row+1, A[row].size):
+        if A[i][col] > A[idx][col]:
+            idx = i
+    # swap
+    A[[row, idx]] = A[[idx, row]]
+    B[[row, idx]] = B[[idx, row]]
+    
 
 def forward_elimination(A, B, pivot, showall):
     for i in range(B.size):
-        # i-th row is the pivot row
+        # i-th row is the initial pivot row
+        if pivot:
+            partial_pivot(A, B, i, i)
         for j in range(i+1, B.size):
             if A[j][i] != 0:
                 fac = A[j][i] / A[i][i]
                 A[j] = A[j] - fac * A[i]
                 B[j] = B[j] - fac * B[i]
-        if (showall):
+        if showall:
             print(A)
             print(B)
 
@@ -31,7 +43,7 @@ def back_substitution(A, B):
     return x
 
 
-def GaussianElimination(A, B, pivot, showall):
+def GaussianElimination(A, B, pivot=True, showall=True):
     forward_elimination(A, B, pivot, showall)
     x = back_substitution(A, B)
     return x
@@ -51,7 +63,7 @@ if __name__ == '__main__':
     n = int(input())
     A = take_arr_input(n)
     B = take_arr_input(n)
-    x = GaussianElimination(A, B, True, True)
+    x = GaussianElimination(A, B)
     print(x)
             
     
