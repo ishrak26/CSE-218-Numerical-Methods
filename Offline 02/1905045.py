@@ -53,11 +53,15 @@ def GaussianElimination(A, B, pivot=True, showall=True):
 # takes user input in row-major order
 def take_arr_input(n):
     arr = []
-    for i in range(n):
+    i = 0
+    while i < n:
         row = input().strip().split()
+        if len(row) == 0: # to handle blank input
+            continue
         for j in range(len(row)):
             row[j] = float(row[j])
-        arr.append(row)  
+        arr.append(row)
+        i = i+1
     return np.array(arr)
 
 # prints 2D matrix A in row-major order upto 4 decimal places
