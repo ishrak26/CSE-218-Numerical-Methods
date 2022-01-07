@@ -7,11 +7,19 @@ Created on Sat Jan  1 22:02:22 2022
 
 import numpy as np
 
+
+def print_matrix(A):
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            print('{0:0.4f}'.format(A[i][j]), end=' ')
+        print()
+    
+
 def partial_pivot(A, B, col, row):
     # find index of the max element staring from row in col
     idx = row
     for i in range(row+1, A[row].size):
-        if A[i][col] > A[idx][col]:
+        if abs(A[i][col]) > abs(A[idx][col]):
             idx = i
     # swap
     A[[row, idx]] = A[[idx, row]]
@@ -28,9 +36,12 @@ def forward_elimination(A, B, pivot, showall):
                 fac = A[j][i] / A[i][i]
                 A[j] = A[j] - fac * A[i]
                 B[j] = B[j] - fac * B[i]
-        if showall:
-            print(A)
-            print(B)
+            if showall:
+                print('A:')
+                print_matrix(A)
+                print('B:')
+                print_matrix(B)
+                print()
 
 
 def back_substitution(A, B):
@@ -59,11 +70,18 @@ def take_arr_input(n):
     return np.array(arr)
 
 
+def print_output(x):
+    for i in range(x.size):
+        print('{0:0.4f}'.format(x[i]))
+
+
 if __name__ == '__main__':
     n = int(input())
     A = take_arr_input(n)
     B = take_arr_input(n)
+    np.set_printoptions(precision=4, suppress=True, formatter={'float': lambda x: "{0:0.4f}".format(x)})
     x = GaussianElimination(A, B)
-    print(x)
+    print('Solution:')
+    print_output(x)
             
     
