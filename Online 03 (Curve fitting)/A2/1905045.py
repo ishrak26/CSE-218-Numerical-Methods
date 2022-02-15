@@ -47,8 +47,6 @@ def GaussianElimination(A, B):
 
 def polynomial_regression(x, y, order):
     m = order
-    A = np.empty((m+1, m+1))
-    B = np.empty(m+1)
     
     sum_x = np.empty(2*m+1)
     sum_y = np.empty(m+1)
@@ -59,10 +57,13 @@ def polynomial_regression(x, y, order):
     for i in range(1, m+1):
         sum_y[i] = np.sum(y * np.power(x, i))
     
+    A = np.empty((m+1, m+1)) # coefficient matrix
+    B = np.empty(m+1) # constant matrix
     for i in range(m+1):
         for j in range(m+1):
             A[i][j] = sum_x[i+j]
         B[i] = sum_y[i]
+    
     a = GaussianElimination(A, B)
     return a
 
@@ -77,31 +78,42 @@ if __name__=='__main__':
     y = np.array([10.3, 13.5, 13.9, 14.2, 11.6, 10.3, 9.7, 9.6, 14.1, 19.8, 31.1])
     plt.scatter(x, y, color='blue')
     plt.title("Plot of No. of Foreign-born Immigrants vs Time")
-    plt.xlabel("Time (in years)")
+    plt.xlabel("Time since 1900 (in years)")
     plt.ylabel("No. of Foreign-born Immigrants (in millions)")
     plt.show()
     
     # 3rd order polynomial
     # y = a_0 + a_1 * x + a_2 * x^2 + a_3 * x^3
     print("From the graph, it can be observed that the plot has two bends.")
-    print("This plot can be modeled ny a third-order polynomial equation")
+    print("This plot can be best-fit modelled ny a third-order polynomial equation")
     print("y = a_0 + a_1 * x + a_2 * x^2 + a_3 * x^3")
+    print()
     
     order = 3
     a = polynomial_regression(x, y, order)
+    print("Unknown cofficients are:")
+    for i in range(a.size):
+        print(f"\ta_{i} = {a[i]}")
+    print("Therefore, equation of the best-fit model is")
+    print(f"y = {a[0]} + {a[1]} * x + {a[2]} * x^2 + {a[3]} * x^3 _____ (i)")
+    print()
     
-    X = np.array(list(i-1900 for i in range(1900, 2011, 1)), float)
+    X = np.array(list(i-1900 for i in range(1890, 2011, 1)), float)
     Y = np.empty(X.shape)
     for i in range(X.size):
         Y[i] = polynomial_func(X[i], a)
     plt.scatter(x, y, color='blue')
     plt.plot(X, Y, color='red')
+    plt.title("Best-fit Curve Modelling for No. of Foreign-born Immigrants vs Time")
+    plt.xlabel("Time since 1900 (in years)")
+    plt.ylabel("No. of Foreign-born Immigrants (in millions)")
+    plt.axhline(color='black')
+    plt.axvline(color='black')
     plt.show()
     
     year = 2010
-    immigrants = polynomial_func(2010-1900, a)
-    print(f"The number of foreign-born immigrants predicted in 2010 is {immigrants} millions", end=' ')
-    print(f"or {int(round(immigrants, 6) * 1E6)}")
-    
-    
-    
+    immigrants = polynomial_func(year-1900, a)
+    immigrants_converted = int(round(immigrants, 6) * 1E6)
+    print()
+    print(f"Using equaion (i), the number of foreign-born immigrants predicted in 2010 is {immigrants} millions", end=' ')
+    print(f"or {immigrants_converted:,} (rounded up to nearest integer)")
