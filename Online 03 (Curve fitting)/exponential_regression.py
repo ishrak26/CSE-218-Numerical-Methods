@@ -42,8 +42,6 @@ def exponential(x, y):
     f = np.empty(b.shape)
     for i in range(f.size):
         f[i] = exp_func(b[i], x, y)
-    print(b)
-    print(f)
     plt.axhline()
     plt.plot(b, f, color='red')
     plt.show()
